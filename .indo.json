@@ -1,0 +1,11 @@
+{
+  "repos": {
+    "vendor/repng": {
+      "url": "https://github.com/aleclarson/repng.git"
+    }
+  },
+  "vendor": [
+    "vendor/**",
+    "vendor/saus/**"
+  ]
+}
