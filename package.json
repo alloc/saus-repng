@@ -28,6 +28,7 @@
   "dependencies": {
     "@saus/react": "*",
     "@saus/repng": "link:",
+    "puppeteer": "^13.1.2",
     "repng": "link:vendor/repng"
   }
 }

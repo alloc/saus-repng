@@ -1,5 +1,5 @@
 import { renderTo } from '@saus/react'
-import repng from 'repng'
+import { capturePng } from './png'
 import {
   render as renderHtml,
   Buffer,
@@ -18,12 +18,13 @@ const defineRenderer = renderTo(
     if (command == 'dev') {
       this.emitFile(file, 'text/html', html)
     } else {
-      const bitmap = await repng(html)
-      this.emitFile(
-        file.replace(/\.html$/, '.png'),
-        'image/png',
-        Buffer.from(bitmap)
-      )
+      const bitmap = await capturePng(html)
+      if (bitmap)
+        this.emitFile(
+          file.replace(/\.html$/, '.png'),
+          'image/png',
+          Buffer.from(bitmap as any)
+        )
     }
   }
 )
