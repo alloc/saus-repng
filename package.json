@@ -16,19 +16,18 @@
     "prepare": "yarn build"
   },
   "peerDependencies": {
+    "puppeteer": ">=13",
     "react": "*",
     "react-dom": "*",
     "saus": "*"
   },
   "devDependencies": {
+    "@alloc/fast-rimraf": "^1.0.8",
     "@types/react": "^17.0.25",
     "@types/react-dom": "^17.0.9",
     "saus": "*"
   },
   "dependencies": {
-    "@saus/react": "*",
-    "@saus/repng": "link:",
-    "puppeteer": "^13.1.2",
-    "repng": "link:vendor/repng"
+    "@saus/react": "*"
   }
 }

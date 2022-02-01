@@ -2,10 +2,10 @@ import puppeteer, { BoxModel, Browser } from 'puppeteer'
 
 let browser: Browser | undefined
 
-export async function capturePng(html: string) {
+export async function capturePng(html: string): Promise<Buffer | null> {
   browser ||= await puppeteer.launch()
-  const page = await browser.newPage()
 
+  const page = await browser.newPage()
   await page.setContent(html, {
     waitUntil: ['domcontentloaded', 'networkidle0'],
     timeout: 0,
@@ -43,5 +43,5 @@ export async function capturePng(html: string) {
   })
 
   await page.close()
-  return result
+  return result as Buffer
 }
