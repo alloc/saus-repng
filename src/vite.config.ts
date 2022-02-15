@@ -1,16 +1,10 @@
-import {
-  defineConfig,
-  PageFactory,
-  Plugin,
-  RenderedPage,
-  SausContext,
-  UserConfig,
-} from 'saus/core'
+import getServerAddr from 'get-server-address'
+import { defineConfig, Plugin, SausContext, UserConfig } from 'saus/core'
 import { capturePng } from './png'
 
 export default (config: UserConfig) =>
   defineConfig({
-    plugins: [],
+    plugins: [servePngInDev()],
   })
 
 function servePngInDev(): Plugin {
@@ -26,9 +20,14 @@ function servePngInDev(): Plugin {
     },
     configureServer(server) {
       const { logger } = server.config
-      server.middlewares.use('/*.png', async (req, res, next) => {
+      let serverUrl: string
+      server.middlewares.use(async (req, res, next) => {
         const pngUrl = req.originalUrl!
-        const page = await context.servePage!(getHtmlUrl(pngUrl))
+        if (!pngUrl.endsWith('.png')) {
+          return next()
+        }
+        const pagePath = getPagePath(pngUrl)
+        const page = await context.servePage!(pagePath)
         if (!page) {
           return next()
         }
@@ -37,7 +36,8 @@ function servePngInDev(): Plugin {
           res.writeHead(500)
           return res.end()
         }
-        const bitmap = await capturePng(page.body)
+        serverUrl ??= getServerAddr(server.httpServer!)
+        const bitmap = await capturePng(page.body, serverUrl + pagePath)
         if (!bitmap) {
           return next()
         }
@@ -53,7 +53,7 @@ function servePngInDev(): Plugin {
 
 const indexPng = '/index.png'
 
-function getHtmlUrl(pngUrl: string) {
+function getPagePath(pngUrl: string) {
   return pngUrl.endsWith(indexPng)
     ? pngUrl.slice(0, -indexPng.length)
     : pngUrl.slice(0, -4)

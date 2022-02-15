@@ -18,7 +18,8 @@ const defineRenderer = renderTo(
     if (command == 'dev') {
       this.emitFile(file, 'text/html', html)
     } else {
-      const bitmap = await capturePng(html)
+      // TODO: start a local server for capture ._.
+      const bitmap = await capturePng(html, '')
       if (bitmap)
         this.emitFile(
           file.replace(/\.html$/, '.png'),

@@ -1,5 +1,5 @@
 {
-  "include": ["src"],
+  "include": ["src", "types"],
   "compilerOptions": {
     "declaration": true,
     "esModuleInterop": true,

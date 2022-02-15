@@ -1,12 +1,28 @@
-import puppeteer, { BoxModel, Browser } from 'puppeteer'
+import type { BoxModel, Browser } from 'puppeteer'
 
 let browser: Browser | undefined
 
-export async function capturePng(html: string): Promise<Buffer | null> {
-  browser ||= await puppeteer.launch()
+export async function capturePng(
+  html: string,
+  url: string
+): Promise<Buffer | null> {
+  browser ||= await loadPuppeteer().launch()
 
   const page = await browser.newPage()
-  await page.setContent(html, {
+
+  await page.setRequestInterception(true)
+  page.on('request', request => {
+    if (request.url() === url) {
+      request.respond({
+        contentType: 'text/html',
+        body: html,
+      })
+    } else {
+      request.continue()
+    }
+  })
+
+  await page.goto(url, {
     waitUntil: ['domcontentloaded', 'networkidle0'],
     timeout: 0,
   })
@@ -42,6 +58,12 @@ export async function capturePng(html: string): Promise<Buffer | null> {
     omitBackground: true,
   })
 
-  await page.close()
+  // await page.close()
   return result as Buffer
+}
+
+function loadPuppeteer(): typeof import('puppeteer') {
+  // This odd redirection allows for local clones of @saus/repng
+  // to find the "puppeteer" package installed by the Vite project.
+  return require(require.resolve('puppeteer', { paths: [process.cwd()] }))
 }
