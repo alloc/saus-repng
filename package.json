@@ -2,7 +2,7 @@
   "name": "@saus/repng",
   "version": "0.1.0",
   "description": "React-driven PNG renderer for Saus",
-  "license": "MIT",
+  "license": "See LICENSE.md",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
